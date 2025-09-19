@@ -3,6 +3,7 @@ create type public.user_role as enum ('super_admin', 'apartment_manager');
 create table public.user_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   role public.user_role not null,
+  email varchar(255),
   name varchar(255),
   phone_number varchar(20),
   created_at timestamptz default now()
@@ -47,8 +48,8 @@ security definer
 set search_path = ''
 as $$
 begin
-  insert into public.user_profiles (user_id, role, name, phone_number)
-  values (new.id, 'apartment_manager', new.raw_user_meta_data ->> 'name', new.raw_user_meta_data ->> 'phone_number')
+  insert into public.user_profiles (user_id, role, email, name, phone_number)
+  values (new.id, 'apartment_manager', new.email, new.raw_user_meta_data ->> 'name', new.raw_user_meta_data ->> 'phone_number')
   on conflict (user_id) do nothing;
   return new;
 end;

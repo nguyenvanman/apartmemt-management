@@ -1,13 +1,7 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-// Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { S3Client, PutObjectCommand } from "npm:@aws-sdk/client-s3@3";
 
 Deno.serve(async (req) => {
-  console.log("Request headers:", Object.fromEntries(req.headers));
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -24,7 +18,8 @@ Deno.serve(async (req) => {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const key =
-      (formData.get("key") as string) || `uploads/${new Date().getTime()}_${file?.name || "unknown"}`;
+      (formData.get("key") as string) ||
+      `uploads/${new Date().getTime()}_${file?.name || "unknown"}`;
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No file provided" }), {
@@ -80,7 +75,6 @@ Deno.serve(async (req) => {
       },
     });
   } catch (error) {
-    console.error(error);
     return new Response(
       JSON.stringify({
         success: false,

@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const key =
-      (formData.get("key") as string) || `uploads/${file?.name || "unknown"}`;
+      (formData.get("key") as string) || `uploads/${new Date().getTime()}_${file?.name || "unknown"}`;
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No file provided" }), {
